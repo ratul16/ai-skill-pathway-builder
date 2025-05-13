@@ -75,7 +75,7 @@
 
 <script setup>
 import { storeToRefs } from "pinia";
-import { useSkillGraph } from "@/store/skillGraph.js";
+import { useSkillGraph } from "~/stores/skillGraph.js";
 
 const store = useSkillGraph();
 const rawSkills = ref("");

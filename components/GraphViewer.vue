@@ -1,70 +1,125 @@
-<script setup>
-// Core graph component
-import { VueFlow } from "@vue-flow/core";
-
-// Auxiliary packages
-import { Background } from "@vue-flow/background";
-import { Controls } from "@vue-flow/controls";
-import { MiniMap } from "@vue-flow/minimap";
-import { storeToRefs } from "pinia";
-import { useSkillGraph } from "@/store/skillGraph.js";
-import HighlighterNode from "@/components/HighlighterNode.vue";
-import { markRaw } from "vue";
-
-const store = useSkillGraph();
-const { nodes, links } = storeToRefs(store);
-const nodeTypes = markRaw({
-  custom: HighlighterNode,
-});
-
-const sampleGraph = {
-  nodes: [
-    { id: "html5", type: "custom", position: { x: 50, y: 50 }, data: { label: "HTML5" } },
-    { id: "css3", type: "custom", position: { x: 200, y: 50 }, data: { label: "CSS3" } },
-    { id: "js", type: "custom", position: { x: 350, y: 50 }, data: { label: "JavaScript" } },
-    { id: "vue", type: "custom", position: { x: 125, y: 150 }, data: { label: "Vue.js" } },
-    { id: "nuxt", type: "custom", position: { x: 275, y: 150 }, data: { label: "Nuxt 3" } },
-  ],
-  links: [
-    { id: "e1", source: "html5", target: "css3" },
-    { id: "e2", source: "css3", target: "js" },
-    { id: "e3", source: "js", target: "vue" },
-    { id: "e4", source: "vue", target: "nuxt" },
-    { id: "e5", source: "html5", target: "vue" },
-  ],
-};
-
-function onClick(node) {
-  alert(`Skill: ${node.id}`);
-}
-</script>
-
 <template>
   <ClientOnly>
-    <div v-if="nodes.length > 0" class="h-[600px]">
+    <div class="h-[700px] relative">
       <VueFlow
-        :nodes="nodes"
-        :edges="links"
+        v-if="flowNodes.length"
+        :nodes="flowNodes"
+        :edges="flowEdges"
         :fit-view="true"
-        :node-types="nodeTypes"
-        :default-edge-options="{ style: { strokeWidth: 2, stroke: '#999' } }"
-        @node-click="onClick"
+        :default-edge-options="{ animated: true }"
       >
         <Background :gap="16" pattern-color="#aaa" />
         <MiniMap />
         <Controls position="top-right" />
-        <template #node="{ id, data, xPos, yPos }">
-          <div
-            class="bg-white border rounded px-2 py-1 text-sm text-center"
-            :style="{ position: 'absolute', transform: `translate(${xPos}px, ${yPos}px)` }"
-          >
-            {{ data.label }} - {{ id }}
-          </div>
-        </template>
       </VueFlow>
-    </div>
-    <div v-else class="flex flex-col gap-2 mt-4">
-      <h4>No Graph available</h4>
+
+      <button
+        class="absolute bottom-4 right-4 px-4 py-2 bg-blue-600 text-white rounded"
+        @click="applyDagreLayout"
+      >
+        Re-layout
+      </button>
     </div>
   </ClientOnly>
 </template>
+
+<script setup>
+import { ref, watch, onMounted } from "vue";
+import { ClientOnly } from "#components";
+import { useSkillGraph } from "@/stores/skillGraph";
+import { storeToRefs } from "pinia";
+
+import { VueFlow } from "@vue-flow/core";
+import { Background } from "@vue-flow/background";
+import { MiniMap } from "@vue-flow/minimap";
+import { Controls } from "@vue-flow/controls";
+import dagre from "@dagrejs/dagre";
+
+// Pull in your graph data
+const store = useSkillGraph();
+const { nodes, links } = storeToRefs(store);
+
+// Reactive arrays for Vue Flow
+const flowNodes = ref([]);
+const flowEdges = ref([]);
+
+// Define a map of style sets
+const stylesMap = {
+  owned: { bg: "#d1fae5", border: "#10b981", color: "#065f46" },
+  next: { bg: "#fef3c7", border: "#f59e0b", color: "#92400e" },
+  future: { bg: "#e0f2fe", border: "#38bdf8", color: "#0369a1" },
+};
+
+// Sync store → flow data
+watch(
+  [nodes, links],
+  () => {
+    flowNodes.value = nodes.value.map((n) => {
+      const { status } = n.data;
+      const s = stylesMap[status] || stylesMap.future;
+
+      return {
+        ...n,
+        style: {
+          backgroundColor: s.bg,
+          border: `2px solid ${s.border}`,
+          color: s.color,
+          padding: "8px",
+          borderRadius: "4px",
+        },
+      };
+    });
+
+    flowEdges.value = links.value.map((e, i) => ({
+      id: e.id || `e${i}`,
+      source: e.source,
+      target: e.target,
+      type: "bezier",
+      animated: true,
+      style: { stroke: "#666", strokeWidth: 2 },
+    }));
+
+    // Run layout
+    applyDagreLayout();
+  },
+  { immediate: true }
+);
+
+// Dagre layout (TB)
+function applyDagreLayout() {
+  if (!flowNodes.value.length) return;
+
+  const g = new dagre.graphlib.Graph();
+  g.setGraph({ rankdir: "TB", marginx: 20, marginy: 20 });
+  g.setDefaultEdgeLabel(() => ({}));
+
+  flowNodes.value.forEach((n) => g.setNode(n.id, { width: 150, height: 50 }));
+  flowEdges.value.forEach((e) => g.setEdge(e.source, e.target));
+
+  dagre.layout(g);
+
+  flowNodes.value = flowNodes.value.map((n) => {
+    const { x, y } = g.node(n.id);
+    return {
+      ...n,
+      position: { x: x - 75, y: y - 25 },
+    };
+  });
+}
+
+// Warn if store.generate wasn’t called
+onMounted(() => {
+  if (!nodes.value.length) {
+    console.warn("No skills loaded – call store.generate(currentSkills, targetRole) first.");
+  }
+});
+</script>
+
+<style>
+.vue-flow__node {
+  transition: transform 0.5s ease;
+}
+.vue-flow__edge path {
+  transition: stroke-dashoffset 0.5s ease, stroke 0.5s ease;
+}
+</style>
