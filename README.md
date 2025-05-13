@@ -1,75 +1,111 @@
-# Nuxt Minimal Starter
+````markdown
+# Skill Pathway Builder
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+A Nuxt 3 web app that generates and visualizes personalized learning pathways using a local LLM (via LM Studio) and Vue Flow. Enter your current skills and target role, and the AI will return a directed graph of “owned”, “next” and “future” skills. The graph is auto‐laid out with Dagre and color‐coded by status.
 
-## Setup
+---
 
-Make sure to install dependencies:
+## 🚀 Features
+
+- **AI-powered skill graph**: Uses a local LLM (DeepSeek R1 Distill LLaMA-8B) to generate a skill roadmap tailored to your target role.
+- **Interactive diagram**: Vue Flow displays nodes and curved, animated edges.
+- **Auto-layout**: Dagre arranges nodes in a top-to-bottom flowchart.
+- **Status highlighting**:
+  - **Owned** skills in green
+  - **Next** skill in amber
+  - **Future** skills in blue
+- **Modal form**: Tailwind/TailwindCSS-styled modal to enter skills & role.
+- **Re-layout button**: Re-run Dagre at any time.
+- **Local development**: No external API keys—connects to your LM Studio endpoint.
+
+---
+
+## 🛠 Tech Stack
+
+- [Nuxt 3](https://v3.nuxtjs.org/) (Vue 3, Vite)
+- [Pinia](https://pinia.vuejs.org/) for state management
+- [Vue Flow](https://vueflow.dev/) for graph rendering
+- [@dagrejs/dagre](https://www.npmjs.com/package/@dagrejs/dagre) for automatic layout
+- [Tailwind CSS](https://tailwindcss.com/) for styling
+- [LM Studio](https://lm‐studio.ai/) & local LLM for AI completions
+
+---
+
+## 📦 Installation
+
+1. **Clone** the repo
+   ```bash
+   git clone https://github.com/your-org/skill‐pathway‐builder.git
+   cd skill‐pathway‐builder
+   ```
+````
+
+2. **Install dependencies**
+
+   ```bash
+   pnpm install
+   # or npm install / yarn install
+   ```
+
+3. **Configure LM Studio**
+
+   - Launch LM Studio and load your model (e.g. `deepseek-r1-distill-llama-8b`).
+   - Note the local API URL (defaults to `http://127.0.0.1:1234`).
+
+4. **Set environment variables**
+   Create a `.env` at project root:
+
+   ```dotenv
+   LM_STUDIO_URL=http://127.0.0.1:1234
+   ```
+
+---
+
+## 🏃‍♂️ Development
 
 ```bash
-# npm
-npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
 pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
+# or npm run dev / yarn dev
 ```
 
-## Production
+- **Frontend** on `http://localhost:3000`
+- **API** endpoints under `/server/api/skill-pathway.post.js` proxy to your LM Studio instance.
 
-Build the application for production:
+---
 
-```bash
-# npm
-npm run build
+## 🔧 Configuration
 
-# pnpm
-pnpm build
+- **Prompt template**: `server/api/skill-pathway.post.js` contains the LLM prompt—tweak the instructions to refine skill selection and graph structure.
 
-# yarn
-yarn build
+- **Graph styles**:
 
-# bun
-bun run build
-```
+  - `components/GraphViewer.vue` maps node statuses to Tailwind classes or inline styles.
+  - Adjust colors in the `stylesMap` object.
 
-Locally preview production build:
+- **Node layout**:
 
-```bash
-# npm
-npm run preview
+  - The `applyDagreLayout()` function in `GraphViewer.vue` runs a top-to-bottom layout (`rankdir: 'TB'`).
+  - Change to `'LR'` for left-to-right flows.
 
-# pnpm
-pnpm preview
+---
 
-# yarn
-yarn preview
+## 📑 Usage
 
-# bun
-bun run preview
-```
+1. Click **Open Skill Pathway Builder**.
+2. Enter your comma-separated current skills and desired target role.
+3. Click **Generate Pathway**.
+4. Watch the AI‐generated graph appear.
+5. Use **Re-order** to re-run auto-layout.
+6. Drag, zoom, and pan the diagram as needed.
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+---
+
+## 🧪 Testing
+
+> Coming soon: unit tests for prompt parsing & graph‐data mapping.
+
+---
+
+## ⚖️ License
+
+MIT © \[Your Name/Org]
