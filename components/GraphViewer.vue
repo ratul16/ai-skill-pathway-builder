@@ -47,6 +47,7 @@ function onClick(node) {
         :edges="links"
         :fit-view="true"
         :node-types="nodeTypes"
+        :default-edge-options="{ style: { strokeWidth: 2, stroke: '#999' } }"
         @node-click="onClick"
       >
         <Background :gap="16" pattern-color="#aaa" />

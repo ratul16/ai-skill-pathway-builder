@@ -63,11 +63,11 @@
       <div class="flex-2 card">
         <h2 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">Skill Pathway</h2>
         <GraphViewer />
-        <!-- <div>
+        <div>
           {{ nodes }}
           <hr />
           {{ links }}
-        </div> -->
+        </div>
       </div>
     </div>
   </div>
