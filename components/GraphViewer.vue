@@ -5,8 +5,9 @@
         v-if="flowNodes.length"
         :nodes="flowNodes"
         :edges="flowEdges"
+        :edge-types="edgeTypes"
         :fit-view="true"
-        :default-edge-options="{ animated: true }"
+        :default-edge-options="{ animated: true, style: { strokeWidth: 2 } }"
       >
         <Background :gap="16" pattern-color="#aaa" />
         <MiniMap />
@@ -29,7 +30,7 @@ import { ClientOnly } from "#components";
 import { useSkillGraph } from "@/stores/skillGraph";
 import { storeToRefs } from "pinia";
 
-import { VueFlow } from "@vue-flow/core";
+import { VueFlow, BezierEdge } from "@vue-flow/core";
 import { Background } from "@vue-flow/background";
 import { MiniMap } from "@vue-flow/minimap";
 import { Controls } from "@vue-flow/controls";
@@ -42,6 +43,9 @@ const { nodes, links } = storeToRefs(store);
 // Reactive arrays for Vue Flow
 const flowNodes = ref([]);
 const flowEdges = ref([]);
+const edgeTypes = markRaw({
+  bezier: BezierEdge,
+});
 
 // Define a map of style sets
 const stylesMap = {
@@ -54,10 +58,22 @@ const stylesMap = {
 watch(
   [nodes, links],
   () => {
+    // 1️⃣ Map nodes into flowNodes with inline styling
     flowNodes.value = nodes.value.map((n) => {
-      const { status } = n.data;
+      if (n.id === "Start") {
+        return {
+          ...n,
+          style: {
+            backgroundColor: "#333",
+            border: "2px solid #000",
+            color: "#fff",
+            padding: "8px",
+            borderRadius: "4px",
+          },
+        };
+      }
+      const status = n.data.status;
       const s = stylesMap[status] || stylesMap.future;
-
       return {
         ...n,
         style: {
@@ -70,16 +86,21 @@ watch(
       };
     });
 
-    flowEdges.value = links.value.map((e, i) => ({
-      id: e.id || `e${i}`,
-      source: e.source,
-      target: e.target,
-      type: "bezier",
-      animated: true,
-      style: { stroke: "#666", strokeWidth: 2 },
-    }));
+    // 2️⃣ Create a set of valid node IDs
+    const validIds = new Set(flowNodes.value.map((n) => n.id));
 
-    // Run layout
+    // 3️⃣ Filter & map edges only if both endpoints exist
+    flowEdges.value = links.value
+      .filter((e) => validIds.has(e.source) && validIds.has(e.target))
+      .map((e, i) => ({
+        id: e.id ?? `e${i}`,
+        source: e.source,
+        target: e.target,
+        animated: true,
+        style: { stroke: "#666", strokeWidth: 2 },
+      }));
+
+    // 4️⃣ Finally, run the Dagre layout to position everything
     applyDagreLayout();
   },
   { immediate: true }

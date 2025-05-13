@@ -2,7 +2,7 @@
 import { defineEventHandler, readBody, createError } from 'h3'
 
 export default defineEventHandler(async (event) => {
-  // 1️⃣ Read & validate input
+  // Read & validate input
   const body = await readBody(event)
   const currentSkills = Array.isArray(body.currentSkills)
     ? body.currentSkills.filter(s => typeof s === 'string')
@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
   }
   const role = typeof body.targetRole === 'string' ? body.targetRole : null
 
-  // 2️⃣ Build the “fenced‐JSON” prompt
+  // Build the 'fenced‐JSON' prompt
   const prompt = `
   I have these current skills: ${currentSkills.join(', ')}.
   My goal is to become a ${role}.
@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
   - Return only valid JSON in a \`\`\`json\`\`\` fence.  
   - The JSON must have exactly two keys: "nodes" and "links".  
   - **Every** node in "nodes" **must** appear in at least one link in "links".  
-  - If necessary, connect foundational skills to a dummy node called "Start" but do not connect current skills to start.
+  - If necessary, connect foundational skills to a dummy node called "Start".
 
   Return **only** valid JSON wrapped in a Markdown code fence labeled \`json\`, with exactly two top‐level keys:
 
@@ -41,7 +41,7 @@ export default defineEventHandler(async (event) => {
   }
   \`\`\`
 
-  Make sure you include skills specific to the target role (“${role}”) that I don’t yet have.
+  Make sure you include skills specific to the target role ("${role}") that I don't yet have.
   `.trim()
 
   // 3️⃣ Call the LM endpoint
