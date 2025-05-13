@@ -82,11 +82,11 @@
         <h2 class="mb-2 text-2xl font-bold tracking-tight text-blue-700">Skill Pathway Chart</h2>
         <div
           v-if="store.loading"
-          class="px-3 py-1 text-xs font-medium leading-none text-center text-blue-800 bg-blue-200 rounded-full animate-pulse"
+          class="px-3 py-1 text-xs font-medium leading-none text-center text-blue-800 bg-blue-200 rounded-md animate-pulse"
         >
           Generating Pathway...
         </div>
-        <GraphViewer v-else />
+        <GraphViewer />
       </div>
     </div>
   </div>

@@ -2,16 +2,15 @@
   <ClientOnly>
     <div class="h-[700px] relative">
       <VueFlow
-        v-if="flowNodes.length"
         :nodes="flowNodes"
         :edges="flowEdges"
         :edge-types="edgeTypes"
         :fit-view="true"
         :default-edge-options="{ animated: true, style: { strokeWidth: 2 } }"
       >
-        <Background :gap="16" pattern-color="#aaa" />
-        <MiniMap />
-        <Controls position="top-right" />
+        <Background :gap="16" pattern-color="#333" />
+        <!-- <MiniMap /> -->
+        <Controls position="bottom-left" />
       </VueFlow>
 
       <button
@@ -39,6 +38,23 @@ import dagre from "@dagrejs/dagre";
 // Pull in your graph data
 const store = useSkillGraph();
 const { nodes, links } = storeToRefs(store);
+const dummyGraph = {
+  nodes: [
+    { id: "Start", position: { x: 0, y: 0 }, data: { label: "Start", status: "owned" } },
+    { id: "HTML5", position: { x: 0, y: 100 }, data: { label: "HTML5", status: "owned" } },
+    { id: "CSS3", position: { x: 0, y: 200 }, data: { label: "CSS3", status: "owned" } },
+    { id: "JavaScript", position: { x: 0, y: 300 }, data: { label: "JavaScript", status: "next" } },
+    { id: "Vue.js", position: { x: 0, y: 400 }, data: { label: "Vue.js", status: "future" } },
+    { id: "Nuxt 3", position: { x: 0, y: 500 }, data: { label: "Nuxt 3", status: "future" } },
+  ],
+  links: [
+    { source: "Start", target: "HTML5" },
+    { source: "HTML5", target: "CSS3" },
+    { source: "CSS3", target: "JavaScript" },
+    { source: "JavaScript", target: "Vue.js" },
+    { source: "Vue.js", target: "Nuxt 3" },
+  ],
+};
 
 // Reactive arrays for Vue Flow
 const flowNodes = ref([]);
