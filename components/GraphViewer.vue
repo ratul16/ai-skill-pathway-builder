@@ -1,24 +1,37 @@
 <template>
   <ClientOnly>
-    <div class="h-[700px] relative">
-      <VueFlow
-        :nodes="flowNodes"
-        :edges="flowEdges"
-        :edge-types="edgeTypes"
-        :fit-view="true"
-        :default-edge-options="{ animated: true, style: { strokeWidth: 2 } }"
-      >
-        <Background :gap="16" pattern-color="#333" />
-        <!-- <MiniMap /> -->
-        <Controls position="bottom-left" />
-      </VueFlow>
-
-      <button
-        class="absolute bottom-4 right-4 px-4 py-2 bg-blue-600 text-white rounded"
-        @click="applyDagreLayout"
-      >
-        Re-layout
-      </button>
+    <div class="flex flex-col h-[700px] w-full gap-4">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center gap-2">
+          <span
+            v-for="type in Object.keys(stylesMap)"
+            :key="type"
+            :style="{
+              backgroundColor: stylesMap[type].bg,
+              color: stylesMap[type].color,
+            }"
+            class="text-sm py-1 px-4 rounded-md capitalize"
+          >
+            {{ type }} skills
+          </span>
+        </div>
+        <button class="px-4 py-2 bg-blue-600 text-white rounded" @click="applyDagreLayout">
+          Re-order
+        </button>
+      </div>
+      <div class="flex-1">
+        <VueFlow
+          class="h-full w-full"
+          :nodes="flowNodes"
+          :edges="flowEdges"
+          :edge-types="edgeTypes"
+          :fit-view="true"
+          :default-edge-options="{ animated: true, style: { strokeWidth: 2 } }"
+        >
+          <Background :gap="16" pattern-color="#333" />
+          <Controls position="bottom-left" />
+        </VueFlow>
+      </div>
     </div>
   </ClientOnly>
 </template>
@@ -113,7 +126,7 @@ watch(
         source: e.source,
         target: e.target,
         animated: true,
-        style: { stroke: "#666", strokeWidth: 2 },
+        style: { stroke: "#444", strokeWidth: 2 },
       }));
 
     // 4️⃣ Finally, run the Dagre layout to position everything

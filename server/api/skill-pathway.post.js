@@ -12,46 +12,55 @@ export default defineEventHandler(async (event) => {
   }
   const role = typeof body.targetRole === 'string' ? body.targetRole : null
 
-  // Build the 'fenced‐JSON' prompt
-  const prompt = `
-  I have these current skills: ${currentSkills.join(', ')}.
-  My goal is to become a ${role}.
+  const systemPrompt = `
+  You are an expert Skill-Pathway Graph Builder. Given a user's current skills and a target role, identify and sequence the exact skills they need to progress—immediate and long-term.
+  Rules:
+  1. Always output **only** valid JSON—no extra text.
+  2. JSON must have exactly two top-level keys: "nodes" and "links".
+  3. Each node has "status":
+    - "owned" for current skills (and "Start")
+    - "next" for one or more skills the user should learn immediately
+    - "future" for all other relevant skills
+  4. There can be multiple "next" nodes.
+  5. Every node must appear in at least one link.
+  6. **Links** describe logical prerequisites:
+    - Connect any foundational “owned” skills (including “Start”) → appropriate “next” skills.
+    - Connect “next” → “future” skills where each future skill depends on one or more next skills.
+    - Feel free to interlink “future” → “future” to show deeper progression.
+  7. For "future" nodes, include a broad, role-specific set of technologies, frameworks, methodologies, and certifications.
+    `.trim();
 
-  Please generate:
-  1. All current skills as "owned".
-  2. The very next skill as "next".
-  3. All further relevant skills as "future".
-
-  **IMPORTANT:**  
-  - Return only valid JSON in a \`\`\`json\`\`\` fence.  
-  - The JSON must have exactly two keys: "nodes" and "links".  
-  - **Every** node in "nodes" **must** appear in at least one link in "links".  
-  - If necessary, connect foundational skills to a dummy node called "Start".
-
-  Return **only** valid JSON wrapped in a Markdown code fence labeled \`json\`, with exactly two top‐level keys:
-
-  \`\`\`json
+  const userPrompt = `
+  Current skills: ${currentSkills.join(', ')}.
+  Target role: ${role}.
+  Construct and return **only** this JSON in a \`\`\`json\`\`\` fence:
   {
     "nodes": [
-      { "id": "Skill A", "status": "owned"|"next"|"future" }, …
+      { "id": "Start",      "status": "owned" },
+      /* each current skill → "owned" */
+      /* one or more skills → "next" */
+      /* all other role-relevant skills → "future" */
     ],
     "links": [
-      { "source": "Skill A", "target": "Skill B" }, …
+      /* every node appears at least once */
+      /* owned → next */
+      /* next → future */
+      /* future → future (optional) for multi-stage progression */
     ]
   }
-  \`\`\`
+  `.trim();
 
-  Make sure you include skills specific to the target role ("${role}") that I don't yet have.
-  `.trim()
-
-  // 3️⃣ Call the LM endpoint
+  // Call the LM endpoint
   const LM_URL = 'http://127.0.0.1:1234/v1/chat/completions'
   const res = await fetch(LM_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: 'deepseek-r1-distill-llama-8b',
-      messages: [{ role: 'user', content: prompt }],
+      model: 'meta-llama-3.1-8b-instruct',
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt }
+      ],
       temperature: 0.7
     })
   })

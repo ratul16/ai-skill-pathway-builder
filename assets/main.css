@@ -21,6 +21,6 @@ body {
 
 @layer utilities {
   .card {
-    @apply w-full p-6 col-2 bg-white border border-gray-200 rounded-lg shadow-sm;
+    @apply w-full p-5 col-2 bg-white border border-gray-200 rounded-lg shadow-sm;
   }
 }
