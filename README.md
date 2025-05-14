@@ -1,5 +1,4 @@
-````markdown
-# Skill Pathway Builder
+# AI Skill Pathway Builder
 
 A Nuxt 3 web app that generates and visualizes personalized learning pathways using a local LLM (via LM Studio) and Vue Flow. Enter your current skills and target role, and the AI will return a directed graph of "owned", "next" and "future" skills. The graph is auto-laid out with Dagre and color-coded by status.
 
@@ -38,7 +37,6 @@ A Nuxt 3 web app that generates and visualizes personalized learning pathways us
    git clone https://github.com/ratul16/skill-pathway-builder
    cd skill-pathway-builder
    ```
-````
 
 2. **Install dependencies**
 
@@ -49,10 +47,11 @@ A Nuxt 3 web app that generates and visualizes personalized learning pathways us
 
 3. **Configure LM Studio**
 
-   - Launch LM Studio and load your model (e.g. `deepseek-r1-distill-llama-8b`).
+   - Launch LM Studio and load your model (e.g.  `meta-llama-3.1-8b-instruct`, `deepseek-r1-distill-llama-8b`).
    - Note the local API URL (defaults to `http://127.0.0.1:1234`).
 
-4. **Set environment variables**
+4. **Set environment variables** (Optional)
+
    Create a `.env` at project root:
 
    ```dotenv
