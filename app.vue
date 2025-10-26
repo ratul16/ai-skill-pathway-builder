@@ -81,7 +81,7 @@
         <hr class="border-gray-300 my-4 border-dashed" />
 
         <div class="">
-          <h2 class="mb-2 text-xl font-bold tracking-tight text-blue-700">Course Curriculum</h2>
+          <h2 class="mb-2 text-xl font-bold tracking-tight text-blue-700">Courses</h2>
           <div class="flex items-center justify-center w-full">
             <label
               for="dropzone-file"
