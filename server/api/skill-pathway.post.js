@@ -56,7 +56,7 @@ export default defineEventHandler(async (event) => {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: 'meta-llama-3.1-8b-instruct',
+      model: 'openai/gpt-oss-20b',
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt }

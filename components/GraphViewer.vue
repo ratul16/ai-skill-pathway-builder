@@ -22,6 +22,7 @@
       <div class="flex-1">
         <VueFlow
           class="h-full w-full"
+          :class="loading ? 'opacity-25' : ''"
           :nodes="flowNodes"
           :edges="flowEdges"
           :edge-types="edgeTypes"
@@ -50,7 +51,7 @@ import dagre from "@dagrejs/dagre";
 
 // Pull in your graph data
 const store = useSkillGraph();
-const { nodes, links } = storeToRefs(store);
+const { nodes, links, loading } = storeToRefs(store);
 const dummyGraph = {
   nodes: [
     { id: "Start", position: { x: 0, y: 0 }, data: { label: "Start", status: "owned" } },
