@@ -4,6 +4,12 @@ A Nuxt 3 web app that generates and visualizes personalized learning pathways us
 
 ---
 
+
+## Perview
+
+<iframe width="560" height="315" src="https://imagekit.io/player/embed/3mh13v7xv4/Skill-path-builder-demo.mp4?controls=true&autoplay=false&loop=false&background=%23000000&updatedAt=1762565355065&thumbnail=https%3A%2F%2Fik.imagekit.io%2F3mh13v7xv4%2FSkill-path-builder-demo.mp4%2Fik-thumbnail.jpg%3FupdatedAt%3D1762565355065&updatedAt=1762565355065" title="ImageKit video player" frameBorder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"> </iframe>
+
+
 ## 🚀 Features
 
 - **AI-powered skill graph**: Uses a local LLM (DeepSeek R1 Distill LLaMA-8B) to generate a skill roadmap tailored to your target role.
