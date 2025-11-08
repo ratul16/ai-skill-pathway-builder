@@ -4,6 +4,10 @@ A Nuxt 3 web app that generates and visualizes personalized learning pathways us
 
 ---
 
+## Demo Video
+
+[![Skill Pathway Builder Demo](https://img.youtube.com/vi/YourVideoID/0.jpg)](https://www.youtube.com/watch?v=YourVideoID)
+
 ## 🚀 Features
 
 - **AI-powered skill graph**: Uses a local LLM (DeepSeek R1 Distill LLaMA-8B) to generate a skill roadmap tailored to your target role.
@@ -33,6 +37,7 @@ A Nuxt 3 web app that generates and visualizes personalized learning pathways us
 ## 📦 Installation
 
 1. **Clone** the repo
+
    ```bash
    git clone https://github.com/ratul16/skill-pathway-builder
    cd skill-pathway-builder
@@ -47,7 +52,7 @@ A Nuxt 3 web app that generates and visualizes personalized learning pathways us
 
 3. **Configure LM Studio**
 
-   - Launch LM Studio and load your model (e.g.  `meta-llama-3.1-8b-instruct`, `deepseek-r1-distill-llama-8b`).
+   - Launch LM Studio and load your model (e.g. `meta-llama-3.1-8b-instruct`, `deepseek-r1-distill-llama-8b`).
    - Note the local API URL (defaults to `http://127.0.0.1:1234`).
 
 4. **Set environment variables** (Optional)
