@@ -38,7 +38,7 @@
             />
           </div>
           <div>
-            <button class="w-100 mb-2" @click="submit">
+            <button class="w-full mb-2" @click="submit">
               {{ store.loading ? "Generating…" : "Generate Pathway" }}
               <svg
                 v-if="!store.loading"

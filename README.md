@@ -6,7 +6,7 @@ A Nuxt 3 web app that generates and visualizes personalized learning pathways us
 
 ## Demo Video
 
-[![Skill Pathway Builder Demo](https://img.youtube.com/vi/YourVideoID/0.jpg)](https://www.youtube.com/watch?v=YourVideoID)
+[![Demo Video](https://ik.imagekit.io/3mh13v7xv4/Skill-path-builder-demo.mp4/ik-thumbnail.jpg?updatedAt=1762565355065)](https://imagekit.io/player/embed/3mh13v7xv4/Skill-path-builder-demo.mp4?controls=true&autoplay=false&loop=false&background=%23000000&updatedAt=1762565355065&thumbnail=https%3A%2F%2Fik.imagekit.io%2F3mh13v7xv4%2FSkill-path-builder-demo.mp4%2Fik-thumbnail.jpg%3FupdatedAt%3D1762565355065&updatedAt=1762565355065)
 
 ## 🚀 Features
 
